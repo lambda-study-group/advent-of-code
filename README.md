@@ -22,3 +22,7 @@ Soluções dos problems do [adventofcode.com](https://adventofcode.com)
 - Solucione os problemas
 - Suba para o seu repostiório
 - Faça no maximo 1 PR por dia.
+
+# Leaderboard
+
+Join Code: ```814992-11698986```.
