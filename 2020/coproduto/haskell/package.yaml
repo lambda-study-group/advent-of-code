@@ -1,10 +1,10 @@
 name:                aoc2020-haskell
 version:             0.1.0.0
-github:              "githubuser/aoc2020-haskell"
+github:              "lambda-study-group/advent-of-code"
 license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2020 Author name here"
+author:              "Pedro Castilho"
+maintainer:          "cstl.px@gmail.com"
+copyright:           "2020 Pedro Castilho"
 
 extra-source-files:
 - README.md
@@ -17,7 +17,7 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/aoc2020-haskell#readme>
+description:         Please see the README on GitHub at https://github.com/lambda-study-group/advent-of-code/blob/main/README.md
 
 dependencies:
 - base >= 4.7 && < 5

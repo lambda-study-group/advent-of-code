@@ -4,16 +4,16 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ba4e6bc46533223067f3667f141520cf941427a8fc9a844c3e0fa51ec48fc4bf
+-- hash: ae98cc017b5826ae011826eb42a738fee53bc33f61def6147b51a59723f75365
 
 name:           aoc2020-haskell
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/aoc2020-haskell#readme>
-homepage:       https://github.com/githubuser/aoc2020-haskell#readme
-bug-reports:    https://github.com/githubuser/aoc2020-haskell/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2020 Author name here
+description:    Please see the README on GitHub at https://github.com/lambda-study-group/advent-of-code/blob/main/README.md
+homepage:       https://github.com/lambda-study-group/advent-of-code#readme
+bug-reports:    https://github.com/lambda-study-group/advent-of-code/issues
+author:         Pedro Castilho
+maintainer:     cstl.px@gmail.com
+copyright:      2020 Pedro Castilho
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -23,11 +23,13 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/aoc2020-haskell
+  location: https://github.com/lambda-study-group/advent-of-code
 
 library
   exposed-modules:
-      Lib
+      Common
+      Day1
+      Day2
   other-modules:
       Paths_aoc2020_haskell
   hs-source-dirs:
