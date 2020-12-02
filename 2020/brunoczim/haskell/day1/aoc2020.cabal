@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b83f42e3649bf4533279df40e78bf41cadec80fe488279083034e74e8752a9ce
+-- hash: ea9512ac3067560cba92fd8b82c07931117970e8702eff1e748d546e569a3630
 
 name:           aoc2020
 version:        0.1.0.0
@@ -15,11 +15,7 @@ author:         Author name here
 maintainer:     example@example.com
 copyright:      2020 Author name here
 license:        BSD3
-license-file:   LICENSE
 build-type:     Simple
-extra-source-files:
-    README.md
-    ChangeLog.md
 
 source-repository head
   type: git
