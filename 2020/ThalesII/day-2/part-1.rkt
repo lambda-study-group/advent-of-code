@@ -1,7 +1,8 @@
+#!/usr/bin/env racket
 #lang racket
 
 (define (string-count str char)
-  (count (lambda (c) (char=? c char)) (string->list str)))
+  (count (λ (c) (char=? c char)) (string->list str)))
 
 (define (valid-entry? entry)
   (match-define (list lo hi char pass) entry)
