@@ -36,14 +36,3 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - aoc2020
-
-tests:
-  aoc2020-test:
-    main:                Spec.hs
-    source-dirs:         test
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - aoc2020
