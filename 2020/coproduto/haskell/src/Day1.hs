@@ -1,31 +1,31 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Lib
-    ( day1Part1,
-      day1Part2
+module Day1
+    ( part1,
+      part2
     ) where
 
 import Data.Maybe (isJust)
 import Data.Either (fromRight)
 import Data.Functor ((<&>))
 import Control.Monad (join)
-import System.IO (withFile, hSetEncoding, utf8, IOMode(ReadMode))
 import Data.Text (Text)
 import qualified Data.Text as Text
-import qualified Data.Text.IO as TextIO
 import qualified Data.Text.Read as TextRead
 import Data.Vector (Vector, (//), (!), (!?))
 import qualified Data.Vector as Vector
 
-day1Part1 :: IO ()
-day1Part1 = do
+import Common (readFileUtf8)
+
+part1 :: IO ()
+part1 = do
   input <- parseInput <$> readFileUtf8 "input/day_1.txt"
   case findElementPair 2020 (fillPigeonholes input) of
     Just (a, b) -> print (a * b)
     Nothing     -> print "No matching pair."
 
-day1Part2 :: IO ()
-day1Part2 = do
+part2 :: IO ()
+part2 = do
   input <- parseInput <$> readFileUtf8 "input/day_1.txt"
   case findElementTriple 2020 (fillPigeonholes input) of
     Just (a, b, c) -> print (a * b * c)
@@ -57,8 +57,3 @@ findElementTriple target vec = join $ Vector.find isJust mapped
           case findElementPair (target - (3 * first + 2)) (Vector.drop (first + 1) vec) of
             Just (second, third) -> Just (first, second +first + 1, third + first + 1)
             Nothing              -> Nothing
-
-readFileUtf8 :: FilePath -> IO Text
-readFileUtf8 fp = withFile fp ReadMode $ \h -> do
-  hSetEncoding h utf8
-  TextIO.hGetContents h
