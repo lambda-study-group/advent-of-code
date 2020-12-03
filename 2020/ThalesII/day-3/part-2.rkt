@@ -22,7 +22,7 @@
 
 (let ([grid (port->grid)])
   (* (count-slope-trees grid 1 1)
-	 (count-slope-trees grid 3 1)
-	 (count-slope-trees grid 5 1)
-	 (count-slope-trees grid 7 1)
-	 (count-slope-trees grid 1 2)))
+     (count-slope-trees grid 3 1)
+     (count-slope-trees grid 5 1)
+     (count-slope-trees grid 7 1)
+     (count-slope-trees grid 1 2)))
