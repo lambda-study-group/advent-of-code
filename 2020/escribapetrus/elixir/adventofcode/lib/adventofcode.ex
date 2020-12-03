@@ -1,18 +1,11 @@
 defmodule Adventofcode do
-  @moduledoc """
-  Documentation for `Adventofcode`.
-  """
+  alias Adventofcode.{DayOne, DayTwo, DayThree}
 
-  @doc """
-  Hello world.
 
-  ## Examples
-
-      iex> Adventofcode.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def day_three do
+    DayThree.inputs
+    |> DayThree.count_trees()
+    |> IO.puts
   end
+
 end

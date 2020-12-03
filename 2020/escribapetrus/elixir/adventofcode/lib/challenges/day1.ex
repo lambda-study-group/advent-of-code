@@ -1,12 +1,11 @@
 defmodule Adventofcode.DayOne do
+  alias Adventofcode.Inputs
 
   def product({x,y}), do: x * y
   def product({x,y,z}), do: x * y * z
 
   def inputs do
-    "resources/input1"
-    |> Path.absname()
-    |> File.stream!
+    Inputs.get(1)
     |> Stream.map(fn x -> get_int(x) end)
   end
 

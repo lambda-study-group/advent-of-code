@@ -1,9 +1,8 @@
 defmodule Adventofcode.DayTwo do
+  alias Adventofcode.Inputs
 
   def inputs do
-    "resources/input2"
-    |> Path.absname()
-    |> File.stream!
+    Inputs.get(2)
     |> Stream.map(fn x -> String.replace(x, "\n", "") end)
   end
 
