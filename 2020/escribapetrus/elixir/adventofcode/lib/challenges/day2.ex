@@ -18,7 +18,7 @@ defmodule Adventofcode.DayTwo do
 
   def valid?(policy, password, :old) do
     [range, char] = String.split(policy, " ")
-    [min, max] = Regex.scan(~r/\d+/, range) |> Enum.map(fn [x] -> get_int(x) end)
+    [min, max] = Regex.scan(~r/\d+/, range) |> Enum.map(fn [x] -> int(x) end)
     count_pass = Regex.scan(~r/#{char}/, password) |> Enum.count()
     cond do
       (count_pass >= min && count_pass <= max) -> true
@@ -28,7 +28,7 @@ defmodule Adventofcode.DayTwo do
 
   def valid?(policy, password, :new) do
     [range, char] = String.split(policy, " ")
-    [min, max] = Regex.scan(~r/\d+/, range) |> Enum.map(fn [x] -> get_int(x) end)
+    [min, max] = Regex.scan(~r/\d+/, range) |> Enum.map(fn [x] -> int(x) end)
     {a,b} = {String.at(password, min-1), String.at(password, max-1)}
 
     cond do
@@ -38,7 +38,7 @@ defmodule Adventofcode.DayTwo do
     end
   end
 
-  defp get_int(str) do
+  defp int(str) do
     {x,_} = Integer.parse(str)
     x
   end
