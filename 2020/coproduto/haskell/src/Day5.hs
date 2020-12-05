@@ -21,26 +21,15 @@ part2 = do
     Just n -> print n
     Nothing -> putStrLn "Invalid input."
 
-
 getSeatIds :: Text -> [Int]
-getSeatIds input =
-  getSeatId <$> Text.unpack <$> Text.lines input
+getSeatIds input = getSeatId <$> Text.unpack <$> Text.lines input
 
 getSeatId :: [Char] -> Int
-getSeatId chars = seatRow * 8 + seatColumn
-  where seatRow    = getSeatRow (take 7 chars)
-        seatColumn = getSeatColumn (drop 7 chars)
-
-getSeatRow :: [Char] -> Int
-getSeatRow = foldl' addDigit 0
+getSeatId = foldl' addDigit 0
   where addDigit n 'F' = 2 * n
         addDigit n 'B' = 2 * n + 1
-
-getSeatColumn :: [Char] -> Int
-getSeatColumn = foldl' addDigit 0
-  where addDigit n 'L' = 2 * n
+        addDigit n 'L' = 2 * n
         addDigit n 'R' = 2 * n + 1
-  
 
 findGap :: [Int] -> Maybe Int
 findGap ns =
