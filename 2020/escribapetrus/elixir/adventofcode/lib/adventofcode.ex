@@ -1,25 +1,25 @@
 defmodule Adventofcode do
-  alias Adventofcode.{DayOne, DayTwo, DayThree}
+  alias Adventofcode.{DayOne, DayTwo, DayThree,DayFour, DayFive}
 
   def main do
-    true
+    challenge(:five)
   end
 
-  def day_one do
+  def challenge(:one) do
     a = DayOne.pair(2020) |> DayOne.product
     b = DayOne.triplet(2020) |> DayOne.product
 
     IO.inspect({a,b})
   end
 
-  def day_two do
+  def challenge(:two) do
     inputs = DayTwo.inputs
     a = inputs |> DayTwo.correct_count(:old)
     b = inputs |> DayTwo.correct_count(:new)
     IO.inspect({a,b})
   end
 
-  def day_three do
+  def challenge(:three) do
     vals = [{1,1}, {3,1}, {5,1}, {7,1}, {1,2}]
     inputs = DayThree.inputs
 
@@ -32,6 +32,38 @@ defmodule Adventofcode do
     |> Enum.reduce(&(&1*&2))
 
     IO.inspect({a,b})
+  end
+
+  def challenge(:four) do
+    inputs = DayFour.inputs
+
+    inputs
+    |> Stream.map(fn x -> DayFour.format_passport(x) end)
+    |> Stream.filter(fn x -> DayFour.valid?(x,:old) end)
+    |> Stream.filter(fn x -> DayFour.valid?(x,:new) end)
+    |> Enum.count()
+    |> IO.inspect()
+  end
+
+  def challenge(:five) do
+    inputs = DayFive.inputs
+
+    a = inputs = inputs
+    |> Stream.map(fn x -> DayFive.decode(x) end)
+    |> Enum.sort_by(fn x -> x.id end)
+
+    b = DayFive.seat_map()
+    |> Enum.reject(fn x -> x in inputs end)
+    |> Enum.filter(fn x ->
+        Enum.find(inputs, fn y -> x.id + 1 == y.id end)
+      end)
+    |> Enum.filter(fn x ->
+      Enum.find(inputs, fn y -> x.id - 1 == y.id end)
+    end)
+    |> Enum.at(0)
+
+    {a |> Enum.max_by(fn x -> x.id end), b}
+    |> IO.inspect
   end
 
 end

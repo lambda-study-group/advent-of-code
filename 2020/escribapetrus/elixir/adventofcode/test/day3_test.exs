@@ -1,6 +1,6 @@
 defmodule DayThreeTest do
   use ExUnit.Case
-  import Adventofcode.DayThree
+  # import Adventofcode.DayThree
 
   # test "checks the position in a line" do
   #   assert iter_line(0) == 0
