@@ -24,6 +24,7 @@ dependencies:
 - text
 - vector
 - containers
+- mtl
 
 library:
   source-dirs: src
