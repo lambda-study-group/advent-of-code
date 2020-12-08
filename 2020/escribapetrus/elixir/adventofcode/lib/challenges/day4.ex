@@ -7,7 +7,7 @@ defmodule Adventofcode.DayFour do
     |> Stream.map(fn x -> String.replace(x, "\n", "") end)
     |> Stream.flat_map(fn x -> String.split(x, " ") end)
     |> Stream.chunk_by(&(&1 != ""))
-    |> Stream.filter(&(&1 != [""]))
+    |> Stream.reject(&(&1 == [""]))
   end
 
   def format_passport(data) do
