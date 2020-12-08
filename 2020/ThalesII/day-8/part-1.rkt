@@ -1,29 +1,32 @@
 #!/usr/bin/env racket
 #lang racket
 
-(define (halted? prog state)
-  (= (car state) (hash-count prog)))
+(define (program-ref prog pos)
+  (hash-ref prog pos '(hlt)))
 
-(define/match (run-instruction inst state)
-  [((cons 'nop imm) (cons pos acc)) (cons (add1 pos) acc)]
-  [((cons 'acc imm) (cons pos acc)) (cons (add1 pos) (+ acc imm))]
-  [((cons 'jmp imm) (cons pos acc)) (cons (+ pos imm) acc)])
+(define (program-set prog pos inst)
+  (hash-set prog pos inst))
 
-(define (run-program prog [state (cons 0 0)] [seen (set)])
+(define (program-step prog state)
+  (match-define (cons pos acc) state)
+  (match (program-ref prog pos)
+    [`(nop ,imm) (cons (add1 pos) acc)]
+    [`(acc ,imm) (cons (add1 pos) (+ acc imm))]
+    [`(jmp ,imm) (cons (+ pos imm) acc)]
+    ['(hlt) state]))
+
+(define (program-run prog [state (cons 0 0)] [seen (set)])
   (match-define (cons pos acc) state)
   (cond
-    [(halted? prog state) state]
     [(set-member? seen pos) state]
-    [else (define new-state (run-instruction (hash-ref prog pos) state))
-          (define new-seen (set-add seen pos))
-          (run-program prog new-state new-seen)]))
+    [else (program-run prog (program-step prog state) (set-add seen pos))]))
 
 (define (string->instruction str)
   (match-define (list opcode-str imm-str) (string-split str))
-  (cons (string->symbol opcode-str) (string->number imm-str)))
+  (list (string->symbol opcode-str) (string->number imm-str)))
 
 (define (port->program)
   (for/hash ([(inst-str pos) (in-indexed (port->lines))])
     (values pos (string->instruction inst-str))))
 
-(cdr (run-program (port->program)))
+(cdr (program-run (port->program)))
