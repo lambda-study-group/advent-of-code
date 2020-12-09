@@ -2,7 +2,7 @@ module Main where
 
 import Data.Char (toUpper)
 import Data.Array
-import qualified Data.IntSet as S
+import Data.IntSet (member, IntSet(), insert, empty)
 
 import Algebra
 
@@ -11,55 +11,77 @@ type Code = Array Int OP
 data OP = NOP Int | ACC Int | JMP Int
         deriving (Show, Read)
 
-runCode ::  Code -> CoAlgebra (ListF (Int, Int)) (Int, Int)
-runCode code (loc, acc) 
+codeSequence ::  Code -> CoAlgebra (ListF (Int, Int)) (Int, Int)
+codeSequence code (loc, acc) 
   | loc > snd (bounds code) = NilF
   | otherwise = ConsF (loc, acc) next 
   where
     next = case code ! loc of
-              NOP _ -> (loc+1, acc)
-              ACC x -> (loc+1, acc+x)
-              JMP x -> (loc+x, acc)
+              NOP _ -> (loc+1, 0)
+              ACC x -> (loc+1, x)
+              JMP x -> (loc+x, 0)
+
+runCode :: Algebra (ListF (Int, Int)) Int
+runCode NilF        = 0
+runCode (ConsF e n) = snd e + n
 
 getTrace :: Algebra (ListF (Int, Int)) [(Int, Int)]
 getTrace NilF        = []
 getTrace (ConsF e n) = e : n
 
-takeUntilDup :: [(Int, Int)] -> [(Int, Int)]
-takeUntilDup xs = foldr go (const []) xs S.empty
+takeBeforeDup :: Algebra (ListF (Int, Int)) (IntSet -> Int)
+takeBeforeDup NilF                 = const 0
+takeBeforeDup (ConsF (loc, acc) n) = fs
   where
-    -- continuation passing style, we incrementally create a function
-    -- that returns the end of the list if the element is found
-    -- or insert the elements and calls the continuation.
-    go x cont set
-      | S.member (fst x) set = []
-      | otherwise            = x : cont (S.insert (fst x) set)
+    fs set
+      | loc `member` set = 0
+      | otherwise        = acc + n (insert loc set)
 
-doesItTerminate :: [(Int, Int)] -> Bool
-doesItTerminate xs = foldr go (const True) xs S.empty
+hyloFindDup :: Code -> Int
+hyloFindDup code = hylo takeBeforeDup (codeSequence code) (0,0) empty
+
+doesItTerminate :: Algebra (ListF (Int, Int)) (IntSet -> (Bool, Int))
+doesItTerminate NilF                 = const (True, 0)
+doesItTerminate (ConsF (loc, acc) n) = fs
   where
-    go x cont set
-      | S.member (fst x) set = False 
-      | otherwise            = cont (S.insert (fst x) set)
+    fs set
+      | loc `member` set = (False, 0)
+      | otherwise        = (+acc) <$> n (insert loc set)
 
-isNotAcc :: (Int, OP) -> (Bool, (Int, OP))
-isNotAcc (loc, op) =
-  case op of
-       ACC _ -> (False, (loc, op))
-       NOP x -> (True, (loc, JMP x))
-       JMP x -> (True, (loc, NOP x))
+codeBranch :: Code -> CoAlgebra (TreeF (Int, Int)) (Int, Int, Bool)
+codeBranch code (loc, acc, b)
+  | loc > snd (bounds code) = LeafF
+  | otherwise = case code ! loc of
+                     ACC x -> SingleF (loc, acc) (loc+1, x, b)
+                     NOP x -> nextNode b (NOP x)
+                     JMP x -> nextNode b (JMP x)
+  where
+    nextNode True (NOP x)  = SingleF (loc, acc) (loc+1, 0, True)
+    nextNode True (JMP x)  = SingleF (loc, acc) (loc+x, 0, True)
+    nextNode False (NOP x) = DoubleF (loc, acc) (loc+1, 0, False) (loc+x, 0, True)
+    nextNode False (JMP x) = DoubleF (loc, acc) (loc+x, 0, False) (loc+1, 0, True)
 
-findPossibleChanges :: [(Int, OP)] -> [(Int, OP)]
-findPossibleChanges = map snd . filter fst . map isNotAcc
 
-createFixes :: Array Int OP -> [(Int, OP)] -> [Array Int OP]
-createFixes code = map ((code//).return) . findPossibleChanges 
+firstJust :: Maybe a -> Maybe a -> Maybe a
+firstJust (Just x) _ = Just x
+firstJust _ y        = y
 
-applyHylo :: Code -> [(Int, Int)]
-applyHylo code = hylo getTrace (runCode code) (0,0)
+codeFix :: Algebra (TreeF (Int, Int)) (IntSet -> Maybe Int)
+codeFix LeafF                  = const (Just 0)
+codeFix (SingleF (loc, acc) n) = fs
+  where
+    fs set
+      | loc `member` set = Nothing 
+      | otherwise        = (+acc) <$> n (insert loc set)
+codeFix (DoubleF (loc, acc) l r) = fs
+  where
+    fs set
+      | loc `member` set = Nothing
+      | otherwise        = let set' = insert loc set
+                               l'   = (+acc) <$> l set'
+                               r'   = (+acc) <$> r set'
+                           in  firstJust l' r' 
 
-findFix :: [Code] -> [(Int, Int)]
-findFix = head . filter doesItTerminate . map applyHylo
 
 main :: IO ()
 main = do
@@ -67,10 +89,6 @@ main = do
   let 
     ops     = map read contents :: [OP]
     n       = length ops
-    zipped  = zip [0..] ops
-    code    = array (0,n-1) zipped
-    fixes   = createFixes code zipped
-    trace   = applyHylo code
-    term    = findFix fixes
-  print $ last $ takeUntilDup trace
-  print $ last term
+    code    = array (0,n-1) $ zip [0..] ops
+  print $ hyloFindDup code
+  print $ hylo codeFix (codeBranch code) (0,0, False) empty

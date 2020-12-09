@@ -22,3 +22,10 @@ data ListF e a = NilF | ConsF e a
 instance Functor (ListF e) where
   fmap _ NilF        = NilF
   fmap f (ConsF e a) = ConsF e (f a)
+
+data TreeF e a = LeafF | SingleF e a | DoubleF e a a  
+
+instance Functor (TreeF e) where
+  fmap _ LeafF = LeafF
+  fmap f (SingleF e a) = SingleF e (f a)
+  fmap f (DoubleF e l r) = DoubleF e (f l) (f r)

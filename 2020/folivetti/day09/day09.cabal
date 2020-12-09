@@ -1,8 +1,8 @@
-name:                day08
+name:                day09
 version:             0.1.0.0
 -- synopsis:
 -- description:
-homepage:            https://github.com/githubuser/day08#readme
+homepage:            https://github.com/githubuser/day09#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Author name here
@@ -13,10 +13,8 @@ build-type:          Simple
 cabal-version:       >=1.10
 extra-source-files:  README.md
 
-executable day08
-  ghc-options:         -O2
+executable day09
   hs-source-dirs:      src
-  other-modules:       Algebra
   main-is:             Main.hs
   default-language:    Haskell2010
-  build-depends:       base >= 4.7 && < 5, array, containers
+  build-depends:       base >= 4.7 && < 5, containers
