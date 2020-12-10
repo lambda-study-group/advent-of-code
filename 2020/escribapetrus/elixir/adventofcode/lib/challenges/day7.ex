@@ -38,11 +38,24 @@ defmodule Adventofcode.DaySeven do
   def containers_of(stream, color) do
     stream
     |> Stream.reject(fn x -> x.contains == "no other" end)
-    |> Stream.filter(fn x ->
-      x
-      |> Enum.filter(fn {c, _} -> c == color end)
-      |> Enum.any?()
-    end)
+    |> Enum.filter(fn x -> contains?(x, color) end)
+  end
+
+  def contains?(rule, color) do
+    rule.contains
+    |> Enum.filter(fn {c, _} -> c == color end)
+    |> Enum.any?()
+  end
+
+  def expand(stream, color), do: expand(stream,[],[%{color: color}])
+  def expand(_,res,[]), do: res
+  def expand(stream, res, containers) do
+    expanded =
+      containers
+      |> Enum.map(fn %{color: color} -> containers_of(stream,color) end)
+      |> List.flatten()
+    res = res ++ expanded
+    expand(stream, res, expanded)
   end
 
 end
