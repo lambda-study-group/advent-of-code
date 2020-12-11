@@ -1,8 +1,8 @@
 defmodule Adventofcode do
-  alias Adventofcode.{DayOne, DayTwo, DayThree,DayFour, DayFive}
+  alias Adventofcode.{DayOne, DayTwo, DayThree,DayFour, DayFive, DaySeven, DayEight, DayNine}
 
   def main do
-    challenge(:five)
+    challenge(:nine)
   end
 
   def challenge(:one) do
@@ -66,4 +66,25 @@ defmodule Adventofcode do
     |> IO.inspect
   end
 
+  def challenge(:seven) do
+    inputs = DaySeven.inputs()
+    inputs
+    |> DaySeven.expand("shiny gold")
+    |> Enum.count
+    |> IO.inspect
+  end
+
+  def challenge(:eight) do
+    inputs = DayEight.inputs()
+    inputs
+    |> DayEight.run()
+    |> IO.inspect()
+  end
+
+  def challenge(:nine) do
+    inputs = DayNine.inputs()
+    inputs
+    |> DayNine.iter(2,25918798)
+    |> IO.inspect()
+  end
 end

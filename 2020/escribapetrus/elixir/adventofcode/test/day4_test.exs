@@ -1,7 +1,7 @@
 defmodule DayFourTest do
   use ExUnit.Case
   alias Adventofcode.Passport
-  import Adventofcode.DayFour
+  alias Adventofcode.DayFour
 
   @one %Passport{ecl: "gry", pid: "860033327", eyr: "2020", hcl: "#fffffd", byr: "1937", iyr: "2017", cid: "147", hgt: "183cm"}
   @two %Passport{iyr: "2013", ecl: "amb", cid: "350", eyr: "2023", pid: "028048884", hcl: "#cfa07d", byr: "1929"}
@@ -18,21 +18,21 @@ defmodule DayFourTest do
 
 
   test "checks if a passport entry is valid using old method" do
-    assert valid?(@four, :old) == false
-    assert valid?(@two, :old) == false
-    assert valid?(@one, :old) == true
-    assert valid?(@three, :old) == true
+    assert DayFour.valid?(@four, :old) == false
+    assert DayFour.valid?(@two, :old) == false
+    assert DayFour.valid?(@one, :old) == true
+    assert DayFour.valid?(@three, :old) == true
   end
 
   test "checks if a passport entry is valid using new method" do
-    assert valid?(@five, :new) == false
-    assert valid?(@six, :new) == false
-    assert valid?(@seven, :new) == false
-    assert valid?(@eight, :new) == false
-    assert valid?(@nine, :new) == true
-    assert valid?(@ten, :new) == true
-    assert valid?(@eleven, :new) == true
-    assert valid?(@twelve, :new) == true
+    assert DayFour.valid?(@five, :new) == false
+    assert DayFour.valid?(@six, :new) == false
+    assert DayFour.valid?(@seven, :new) == false
+    assert DayFour.valid?(@eight, :new) == false
+    assert DayFour.valid?(@nine, :new) == true
+    assert DayFour.valid?(@ten, :new) == true
+    assert DayFour.valid?(@eleven, :new) == true
+    assert DayFour.valid?(@twelve, :new) == true
   end
 
   test "format a passport from a string of data" do
@@ -44,10 +44,10 @@ defmodule DayFourTest do
           "byr:1931", "hgt:179cm", "cid:0"]
     d = ["hcl:#cfa07d", "eyr:2025", "pid:166559648", "iyr:2011", "ecl:brn", "hgt:59in"]
 
-    assert format_passport(a) == @one
-    assert format_passport(b) == @two
-    assert format_passport(c) == @three
-    assert format_passport(d) == @four
+    assert DayFour.format_passport(a) == @one
+    assert DayFour.format_passport(b) == @two
+    assert DayFour.format_passport(c) == @three
+    assert DayFour.format_passport(d) == @four
   end
 
 end
