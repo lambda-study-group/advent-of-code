@@ -9,6 +9,7 @@ import qualified Day6
 import qualified Day7
 import qualified Day8
 import qualified Day9
+import qualified Day10
 
 main :: IO ()
 main = do
@@ -73,4 +74,11 @@ main = do
   Day9.part1
   putStr "Day 9 Part 2 - Result: "
   Day9.part2
+  putStr "\n"
+
+  putStrLn "-- Day 10 --"
+  putStr "Day 10 Part 1 - Result: "
+  Day10.part1
+  putStr "Day 10 Part 2 - Result: "
+  Day10.part2
   putStr "\n"
