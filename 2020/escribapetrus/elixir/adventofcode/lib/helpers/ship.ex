@@ -1,0 +1,56 @@
+defmodule Ship do
+  use Agent
+
+  defstruct [orientation: 0, x: 0, y: 0]
+
+  def start(value \\ %Ship{}) do
+    Agent.start_link(fn -> value end, name: __MODULE__)
+  end
+
+  def value do
+    Agent.get(__MODULE__, &(&1))
+  end
+
+  def move({dir, val}) do
+    Agent.update(__MODULE__, &(move(&1, {dir,val})))
+  end
+
+  def move(val) do
+    Agent.update(__MODULE__, &(move(&1, val)))
+  end
+
+  def steer(val) do
+    Agent.update(__MODULE__, &(steer(&1, val)))
+  end
+
+  def stop do
+    Agent.stop(__MODULE__)
+  end
+
+  defp move(ship = %Ship{}, {dir, val}) do
+    case dir do
+      "E" -> %Ship{ship | x: ship.x + val}
+      "N" -> %Ship{ship | y: ship.y + val}
+      "W" -> %Ship{ship | x: ship.x - val}
+      "S" -> %Ship{ship | y: ship.y - val}
+    end
+  end
+
+  defp move(ship = %Ship{}, val) do
+    case ship.orientation do
+      0 -> %Ship{ship | x: ship.x + val }
+      90 -> %Ship{ship | y: ship.y + val }
+      180 -> %Ship{ship | x: ship.x - val }
+      270 -> %Ship{ship | y: ship.y - val }
+    end
+  end
+
+  defp steer(ship = %Ship{}, val) do
+    res = ship.orientation + val
+    cond do
+      (res >= 360) -> %Ship{ship | orientation: res - 360}
+      true -> %Ship{ship | orientation: res}
+    end
+  end
+
+end

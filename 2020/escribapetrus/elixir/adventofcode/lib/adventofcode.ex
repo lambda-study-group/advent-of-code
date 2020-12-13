@@ -1,8 +1,8 @@
 defmodule Adventofcode do
-  alias Adventofcode.{DayOne, DayTwo, DayThree,DayFour, DayFive, DaySeven, DayEight, DayNine}
+  alias Adventofcode.{DayOne, DayTwo, DayThree,DayFour, DayFive, DaySeven, DayEight, DayNine, DayTen, DayEleven, DayTwelve}
 
   def main do
-    challenge(:nine)
+    challenge(:twelve)
   end
 
   def challenge(:one) do
@@ -87,4 +87,28 @@ defmodule Adventofcode do
     |> DayNine.iter(2,25918798)
     |> IO.inspect()
   end
+
+  def challenge(:ten) do
+    inputs = DayTen.inputs()
+    inputs
+    |> DayTen.plug_device()
+    # |> DayTen.works?()
+    # |> DayTen.differences()
+    # |> DayTen.split_differences()
+    # |> DayTen.product()
+    |> IO.inspect()
+  end
+
+  def challenge(:eleven) do
+    inputs = DayEleven.inputs()
+    inputs
+    |> IO.inspect()
+  end
+
+  def challenge(:twelve) do
+    inputs = DayTwelve.inputs()
+    inputs
+    |> IO.inspect()
+  end
+
 end
