@@ -1,6 +1,7 @@
 module Common
   ( readFileUtf8
   , textToInt
+  , textToInteger
   , sum'
   , product'
   ) where
@@ -19,6 +20,9 @@ product' = foldl' (*) 1
 
 textToInt :: Text -> Int
 textToInt txt = let Right (x, _) = Read.decimal txt in x
+
+textToInteger :: Text -> Integer
+textToInteger txt = let Right (x, _) = Read.decimal txt in x
 
 readFileUtf8 :: FilePath -> IO Text
 readFileUtf8 fp = withFile fp ReadMode $ \h -> do
