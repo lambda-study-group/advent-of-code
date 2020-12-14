@@ -18,7 +18,7 @@ sum' = foldl' (+) 0
 product' :: (Num a, Foldable f) => f a -> a
 product' = foldl' (*) 1
 
-textToInt :: Text -> Int
+textToInt :: Integral a => Text -> a
 textToInt txt = let Right (x, _) = Read.decimal txt in x
 
 textToInteger :: Text -> Integer
