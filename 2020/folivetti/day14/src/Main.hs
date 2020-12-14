@@ -1,6 +1,7 @@
 {-# language TupleSections #-}
 module Main where
 
+import Control.Monad (foldM)
 import Data.List hiding (insert, union)
 import Data.List.Split
 import Data.Map.Strict (Map(..), insert, empty, fromList, union)
@@ -65,13 +66,13 @@ parseInstruction code
     val   = read (code' !! 1)
 
 maskAddresses :: Mask -> [Int] -> [Int]
-maskAddresses mask bits = go mask bits 1 [0]
+maskAddresses mask bits = foldM f 0 
+                        $ zip3 mask bits 
+                        $ map (2^) [0..]
   where
-    go _            []     _   xs = xs
-    go (Zero:ms)    (0:bs) mul xs = go ms bs (2*mul) xs
-    go (NotCare:ms) (_:bs) mul xs = go ms bs (2*mul) (xs ++ map (+mul) xs) 
-    -- Zero, 1 and One, _
-    go (_      :ms) (_:bs) mul xs = go ms bs (2*mul) (map (+mul) xs)
+    f tot (Zero   , x, mul) = [tot + x*mul]
+    f tot (One    , _, mul) = [tot + mul]
+    f tot (NotCare, _, mul) = [tot + mul, tot]
 
 applyInstruction :: Instruction
 applyInstruction (mem, mask) code =
