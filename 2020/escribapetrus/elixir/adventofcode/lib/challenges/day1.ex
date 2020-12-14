@@ -1,13 +1,14 @@
 defmodule Adventofcode.DayOne do
   alias Adventofcode.Inputs
 
-  def product({x,y}), do: x * y
-  def product({x,y,z}), do: x * y * z
 
   def inputs do
     Inputs.get(1)
     |> Stream.map(fn x -> int(x) end)
   end
+
+  def product({x,y}), do: x * y
+  def product({x,y,z}), do: x * y * z
 
   def pair(sum) do
     lis = for x <- inputs(), y <- inputs(), x + y == sum, do: {x,y}
