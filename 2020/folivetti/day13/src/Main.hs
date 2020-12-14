@@ -17,11 +17,17 @@ parseData dat = let (x:y:_) = lines dat
 sieve :: [(Integer, Integer)] -> Integer
 sieve = head . snd . foldl' go (1, [0])
   where
-    createSeeds mult x  = map (\i -> x + i*mult) [0..]
-    filterSeeds n a     = head . filter (\i -> (i+a) `mod` n == 0)
-    nextSeeds m n a     = createSeeds (m*n) . filterSeeds n a
+    createSeeds mult x  = map (\i -> x + i*mult) [0..] -- [x, x+mult..]
+    filterSeeds n a     = head . filter (\i -> (i+a) `mod` n == 0) 
+    nextSeeds m n a     = createSeeds (m*n) . filterSeeds n a -- map.filter 
 
-    go (m, seeds) (a,n) = (m*n, nextSeeds m n a seeds)
+    go (m, seeds) (a,n) = (m*n, nextSeeds m n a seeds) -- swap
+
+sieve' :: (Integer, Integer) -> (Integer, Integer) -> (Integer, Integer)
+sieve' (seed, mul) (offset, bus) = (smallestSolution, bus*mul)
+  where
+    smallestSolution = head [t | t <- [seed, seed+mul ..]
+                               , (t+offset) `rem` bus == 0]
 
 main :: IO ()
 main = do
@@ -32,3 +38,4 @@ main = do
       (tf, bus)      = minimumBy (comparing fst) $ zip turns buses
   print $ tf*bus
   print $ sieve offsBuses
+  print $ foldl' sieve' (0, 1) offsBuses
