@@ -69,9 +69,9 @@ maskAddresses mask bits = go mask bits 1 [0]
   where
     go _            []     _   xs = xs
     go (Zero:ms)    (0:bs) mul xs = go ms bs (2*mul) xs
-    go (Zero:ms)    (1:bs) mul xs = go ms bs (2*mul) (map (+mul) xs)
-    go (One :ms)    (_:bs) mul xs = go ms bs (2*mul) (map (+mul) xs)
-    go (NotCare:ms) (_:bs) mul xs = go (Zero:ms) (0:bs) mul xs ++ go (Zero:ms) (1:bs) mul xs
+    go (NotCare:ms) (_:bs) mul xs = go ms bs (2*mul) (xs ++ map (+mul) xs) 
+    -- Zero, 1 and One, _
+    go (_      :ms) (_:bs) mul xs = go ms bs (2*mul) (map (+mul) xs)
 
 applyInstruction :: Instruction
 applyInstruction (mem, mask) code =
