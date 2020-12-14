@@ -8,9 +8,16 @@ defmodule Adventofcode.DayTwelve do
   end
 
   def format(instruction) do
-    [[direction], [value]] = Regex.scan(~r/[A-Z]+|[0-9]+/, instruction)
+    [[op], [value]] = Regex.scan(~r/[A-Z]+|[0-9]+/, instruction)
     {value,_} = Integer.parse(value)
-    {direction, value}
+    {op, value}
+  end
+
+  def run([], _ship), do: []
+  def run(instructions, ship) do
+    [x|xs] = instructions
+    Ship.run(ship, x)
+    run(xs, ship)
   end
 
 end

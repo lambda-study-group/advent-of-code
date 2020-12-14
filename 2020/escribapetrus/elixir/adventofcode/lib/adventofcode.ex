@@ -1,5 +1,5 @@
 defmodule Adventofcode do
-  alias Adventofcode.{DayOne, DayTwo, DayThree,DayFour, DayFive, DaySeven, DayEight, DayNine, DayTen, DayEleven, DayTwelve}
+  alias Adventofcode.{DayOne, DayTwo, DayThree, DayFour, DayFive, DaySeven, DayEight, DayNine, DayTen, DayEleven, DayTwelve}
 
   def main do
     challenge(:twelve)
@@ -106,8 +106,14 @@ defmodule Adventofcode do
   end
 
   def challenge(:twelve) do
-    inputs = DayTwelve.inputs()
-    inputs
+    {:ok, ship} = Ship.start()
+
+    DayTwelve.inputs()
+    |> DayTwelve.run(ship)
+
+    %Ship{x: x, y: y} = Ship.value(ship)
+
+    abs(x) + abs(y)
     |> IO.inspect()
   end
 
