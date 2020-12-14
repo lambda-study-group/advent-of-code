@@ -2,6 +2,7 @@
 module Main where
 
 import Control.Monad (foldM)
+import Data.Bits
 import Data.List hiding (insert, union)
 import Data.List.Split
 import Data.Map.Strict (Map(..), insert, empty, fromList, union)
@@ -66,13 +67,13 @@ parseInstruction code
     val   = read (code' !! 1)
 
 maskAddresses :: Mask -> [Int] -> [Int]
-maskAddresses mask bits = foldM f 0 
-                        $ zip3 mask bits 
-                        $ map (2^) [0..]
+maskAddresses mask bits = foldM f 0
+                        $ zip3 mask bits
+                        $ map (shiftL 1) [0..]
   where
-    f tot (Zero   , x, mul) = [tot + x*mul]
-    f tot (One    , _, mul) = [tot + mul]
+    f tot (Zero   , 0,   _) = [tot]
     f tot (NotCare, _, mul) = [tot + mul, tot]
+    f tot (_      , _, mul) = [tot + mul]
 
 applyInstruction :: Instruction
 applyInstruction (mem, mask) code =
@@ -101,5 +102,5 @@ main = do
   contents <- lines <$> readFile "day14.txt"
   let mask     = replicate 36 NotCare
       sumTot f = M.foldr (+) 0 $ runCode f (empty, mask) contents
-  print $ sumTot applyInstruction 
-  print $ sumTot applyInstructionV2 
+  print $ sumTot applyInstruction
+  print $ sumTot applyInstructionV2
