@@ -1,4 +1,3 @@
-{-# language FlexibleContexts #-}
 module Main where
 
 import Data.IntMap.Strict
@@ -14,17 +13,20 @@ next x n s =
     Nothing -> x : next 0     (n+1) (insert x n s)
     Just y  -> x : next (n-y) (n+1) (insert x n s)
 
+reduceM :: (Foldable t, Monad m) => b -> t a -> (b -> a -> m b) -> m b
+reduceM x xs f = foldM f x xs
+
+nextNumber _    (-1) = 0
+nextNumber turn val  = turn - val
+
 run :: Int -> [Int] -> Int
 run n input = runST $ do
   arr <- newArray (0, n) (-1) :: ST s (STUArray s Int Int)
-  let init (i, v) = writeArray arr v i
-      f next turn = do val <- readArray arr next
-                       writeArray arr next turn
-                       if val == -1 
-                          then return 0
-                          else return (turn-val)
-  mapM_ init $ zip [1..] input 
-  foldM f 0 [length input + 1 .. n - 1]
+  mapM_ (uncurry $ writeArray arr) $ zip input [1..]
+  reduceM 0 [length input + 1 .. n - 1] 
+    (\next turn -> do val <- nextNumber turn <$> readArray arr next
+                      writeArray arr next turn
+                      return val) 
 
 main :: IO ()
 main = do
