@@ -41,9 +41,9 @@ fromEither :: Show a => Either a b -> b
 fromEither (Right x) = x
 fromEither (Left  x) = error $ show x
 
--- * Non-deterministic automata
-runNDA :: Map Int Rule -> Int -> String -> Bool
-runNDA rules k = elem "" . go (Single k)
+-- * Non-deterministic finite automata
+runNDFA :: Map Int Rule -> Int -> String -> Bool
+runNDFA rules k = elem "" . go (Single k)
   where
     go _           ""      = []
     go (Token c)   (c':cs) = [cs | c==c']
@@ -60,8 +60,8 @@ main = do
   let rulesStr = takeWhile (/="") dat
       strings  = tail $ dropWhile (/="") dat
       rules    = parseMap rulesStr
-      part1    = map (runNDA rules 0) strings
+      part1    = map (runNDFA rules 0) strings
       rules'   = insert 8 r8 $ insert 11 r11 rules
-      part2    = map (runNDA rules' 0) strings 
+      part2    = map (runNDFA rules' 0) strings 
   print $ length $ filter id part1
   print $ length $ filter id part2
