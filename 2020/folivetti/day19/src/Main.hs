@@ -1,5 +1,7 @@
 module Main where
 
+import Data.Either     (fromRight)
+import Data.Bifunctor  (first)
 import Data.Map.Strict (Map(..),fromList, (!), insert)
 import Text.Parsec
 
@@ -8,42 +10,33 @@ data Rule = Single Int | And Rule Rule | Or Rule Rule | Token Char
 
 -- * Parsing stuff
 getToken :: Parsec String () Rule
-getToken = do
-  char '\"'
-  val <- letter
-  char '\"'
-  return (Token val)
+getToken = Token <$> between (char '\"') (char '\"') letter
 
 getSingle :: Parsec String () Rule
 getSingle = Single . read <$> many digit
 
 getAnd :: Parsec String () Rule
-getAnd = do
-  rule1 <- getSingle
-  char ' '
-  And rule1 <$> getSingle
+getAnd = And <$> getSingle <*> (char ' ' >> getSingle)
 
 getOr :: Parsec String () Rule
-getOr = try (Or <$> getSingle <*> (string " | " >> getSingle)) <|> (Or <$> getAnd <*> (string " | " >> getAnd))
+getOr = try (Or <$> getSingle <*> (string " | " >> getSingle)) 
+     <|>    (Or <$> getAnd    <*> (string " | " >> getAnd))
 
+getKey :: Parsec String () Int
+getKey = read <$> between (string "") (string ": ") (many digit)
+
+getRule :: Parsec String () Rule
+getRule = try getToken <|> try getOr <|> try getAnd <|> getSingle
 
 getData :: Parsec String () (Int, Rule)
-getData = do
-  key  <- read <$> many digit
-  string ": "
-  rule <- try getToken <|> try getOr <|> try getAnd <|> getSingle
-  return (key, rule)
+getData = (,) <$> getKey <*> getRule
 
 parseMap :: [String] -> Map Int Rule
-parseMap css = fromList $ map (fromEither . parse getData "") css
-
-fromEither :: Show a => Either a b -> b
-fromEither (Right x) = x
-fromEither (Left  x) = error $ show x
+parseMap = fromList . map (fromRight (0, Single 0) . parse getData "") 
 
 -- * Non-deterministic finite automata
 runNDFA :: Map Int Rule -> Int -> String -> Bool
-runNDFA rules k = elem "" . go (Single k)
+runNDFA rules k = elem "" . go (rules ! k)
   where
     go _           ""      = []
     go (Token c)   (c':cs) = [cs | c==c']
@@ -57,11 +50,8 @@ r11 = Or (And (Single 42) (Single 31)) (And (And (Single 42) (Single 11)) (Singl
 main :: IO ()
 main = do
   dat <- lines <$> readFile "day19.txt"
-  let rulesStr = takeWhile (/="") dat
-      strings  = tail $ dropWhile (/="") dat
-      rules    = parseMap rulesStr
-      part1    = map (runNDFA rules 0) strings
-      rules'   = insert 8 r8 $ insert 11 r11 rules
-      part2    = map (runNDFA rules' 0) strings 
-  print $ length $ filter id part1
-  print $ length $ filter id part2
+  let (rules, strings) = first parseMap . span (/="") $ dat
+      rules'           = insert 8 r8 . insert 11 r11   $ rules
+      countWith r      = length . filter (runNDFA r 0) $ strings
+  print $ countWith rules
+  print $ countWith rules'
