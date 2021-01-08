@@ -3,6 +3,7 @@ module Main where
 import Data.List
 import Control.Monad
 import Algebra
+import Representable
 
 genDynTable :: CoAlgebra (ListF Int) [Int]
 genDynTable []     = NilF
@@ -23,6 +24,15 @@ count n jolts (ConsF x xs) = tot : xs
       | (jolts !! ix) - jolt <= 3 = acc + (xs !! (ix-x-1))
       | otherwise                 = 0
 
+f :: Int -> [Int] -> Int -> Int
+f n jolts ix
+  | ix == n-2 = 1
+  | otherwise = sum $ map (f n jolts) rng
+  where
+    rng  = filter (\jx -> (jx < n) && within jx) [ix+1..ix+3]
+    jolt = jolts !! ix
+    within jx = jolts !! jx <= jolt + 3
+
 main :: IO ()
 main = do
   dat <- map read . lines <$> readFile "day10.txt"
@@ -31,5 +41,8 @@ main = do
       n     = length jolts
       n1    = length $ filter (==1) diff
       n3    = length $ filter (==3) diff
+      t :: Stream Int
+      t     = tabulate (f n jolts)
   print $ n1*(n3+1)
   print $ head $ hylo (count n jolts) genDynTable [0 .. length jolts - 2]
+  print $ index t 0
